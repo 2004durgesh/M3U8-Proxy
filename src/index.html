@@ -1,64 +1,76 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Eltik's M3U8 Proxy</title>
-        <meta charset="utf-8">
-        <meta name="title" content="Eltik's M3U8 Proxy" />
-        <meta name="description" content="Playground for testing Eltik's m3u8 proxy." />
 
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://m3u8.eltik.net/test" />
-        <meta property="og:title" content="Eltik's M3U8 Proxy" />
-        <meta property="og:description" content="Playground for testing Eltik's m3u8 proxy." />
-        <meta property="og:image" content="" />
+<head>
+    <title>Eltik's M3U8 Proxy</title>
+    <meta charset="utf-8">
+    <meta name="title" content="Eltik's M3U8 Proxy" />
+    <meta name="description" content="Playground for testing Eltik's m3u8 proxy." />
 
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://m3u8.eltik.net/test" />
-        <meta property="twitter:title" content="Eltik's M3U8 Proxy"/>
-        <meta property="twitter:description" content="Playground for testing Eltik's m3u8 proxy." />
-        <meta property="twitter:image" content="" />
-        <style>
-            video {
-                width: 100%;
-                height: 100%;
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://m3u8.eltik.net/test" />
+    <meta property="og:title" content="Eltik's M3U8 Proxy" />
+    <meta property="og:description" content="Playground for testing Eltik's m3u8 proxy." />
+    <meta property="og:image" content="" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://m3u8.eltik.net/test" />
+    <meta property="twitter:title" content="Eltik's M3U8 Proxy" />
+    <meta property="twitter:description" content="Playground for testing Eltik's m3u8 proxy." />
+    <meta property="twitter:image" content="" />
+    <style>
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Very bad playground design but its fine</h1>
+    <p>basically put in an m3u8 for the url, and put stringified headers into the headers section. yeah thats it.</p>
+    <label for="url">URL</label>
+    <input type="text" id="url"
+        value="http://127.0.0.1:8080/m3u8-proxy?url=https%3A%2F%2Fewal.v44381c4b81.site%2F_v2-wwdo%2F12a3c523fb105800ed8c394685aeeb0b972ea85c00bdf9ba48477baea93ece832257df1a4b6125fcfa38c35da05dee86aad28d46d73fc4e9d4e5a67f0720afd030c611a41e1abd5616c5f4e93f157d12642686271c4675c39085fb09cea322992b15f541532ba10eabbb%2Fh%2Flist%3B15a38634f803584ba8926411d7bee906856cab0654b5bd.m3u8&headers=%7B%22referer%22%3A%22https%3A%2F%2Fvid30c.site%2Fe%2F7ZPN6Q5N0P02%22%7D" />
+    <label for="headers">Headers</label>
+    <textarea id="headers">{"referer": "https://vid30c.site/e/7ZPN6Q5N0P02"}</textarea>
+    <button onclick="test()">Test</button>
+    <video id="hls" controls></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        function test() {
+            const url = document.getElementById('url').value;
+            let headers = document.getElementById('headers').value;
+
+            try {
+                headers = JSON.parse(headers);
+            } catch (e) {
+                headers = {};
+                alert("Invalid headers. Set headers to {}.");
             }
-        </style>
-    </head>
-    <body>
-        <h1>Very bad playground design but its fine</h1>
-        <p>basically put in an m3u8 for the url, and put stringified headers into the headers section. yeah thats it.</p>
-        <label for="url">URL</label>
-        <input type="text" id="url" value="https://ojkx.vizcloud.co/simple/EqPFJvsQWADtjDlGha7rC8UurFwHuLiwTk17rqk+wYMnU94US2El_Po4w12gXe6GptOSQtc/br/list.m3u8#.mp4" />
-        <label for="headers">Headers</label>
-        <textarea id="headers">{"referer": "https://9anime.pl"}</textarea>
-        <button onclick="test()">Test</button>
-        <video id="hls" controls></video>
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-        <script>
-            function test() {
-                const url = document.getElementById('url').value;
-                let headers = document.getElementById('headers').value;
 
-                try {
-                    headers = JSON.parse(headers);
-                } catch (e) {
-                    headers = {};
-                    alert("Invalid headers. Set headers to {}.");
-                }
+            console.log("Using URL " + url);
+            console.log("Using headers " + JSON.stringify(headers));
+            console.log("req on ", `/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`)
 
-                console.log("Using URL " + url);
-                console.log("Using headers " + JSON.stringify(headers));
-
-                if (Hls.isSupported()) {
-                    var video = document.getElementById('hls');
-                    var hls = new Hls();
-                    hls.loadSource(`/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`);
-                    hls.attachMedia(video);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        console.log(`/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`)
+            if (Hls.isSupported()) {
+                var video = document.getElementById('hls');
+                var hls = new Hls();
+                hls.loadSource(`/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    console.log(hls.levels)
+                    hls.levels.forEach((level, index) => {
+                        console.log(`Level ${index}:`);
+                        console.log(`  - URL: ${level.url}`);
+                        console.log(`  - Bitrate: ${level.bitrate}`);
+                        console.log(`  - Width: ${level.width}`);
+                        console.log(`  - Height: ${level.height}`);
                     });
-                }
+                });
             }
-        </script>
-    </body>
+        }
+    </script>
+</body>
+
 </html>
