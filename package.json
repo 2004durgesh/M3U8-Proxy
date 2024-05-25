@@ -24,16 +24,10 @@
     "prettier": "prettier --write .",
     "lint": "npm run eslint && npm run prettier"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Eltik/M3U8-Proxy.git"
-  },
+  
   "author": "eltik",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Eltik/M3U8-Proxy/issues"
-  },
-  "homepage": "https://github.com/Eltik/M3U8-Proxy#readme",
+  
   "dependencies": {
     "axios": "^0.27.2",
     "colors": "^1.4.0",
